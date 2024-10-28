@@ -10,9 +10,9 @@ import java.util.Optional;
 public interface ItemStorage {
     Item create(Item item, Long ownerId);
 
-    Optional<Item> getItemById(Long itemId) throws NotFoundException;
+    Optional<Item> getItemById(Long itemId);
 
-    Item update(Long itemId, Item newItem) throws ValidationException, NotFoundException;
+    Item update(Long itemId, Item newItem, Long ownerId);
 
     void deleteItem(Long itemId) throws ValidationException, NotFoundException;
 

@@ -25,28 +25,13 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public Optional<Item> getItemById(Long itemId) throws NotFoundException {
-        if (!items.containsKey(itemId)) {
-            log.warn("Введен не верный id - {}", itemId);
-            throw new NotFoundException("Item с таким ID не найден!");
-        }
-        log.debug("Запрос на Item номер - {}", itemId);
+    public Optional<Item> getItemById(Long itemId) {
         return Optional.ofNullable(items.get(itemId));
     }
 
     @Override
-    public Item update(Long itemId, Item newItem) throws ValidationException, NotFoundException {
-        Item item = items.get(itemId);
-
-        if (newItem.getName() != null) {
-            item.setName(newItem.getName());
-        }
-        if (newItem.getDescription() != null) {
-            item.setDescription(newItem.getDescription());
-        }
-        if (newItem.getAvailable() != null) {
-            item.setAvailable(newItem.getAvailable());
-        }
+    public Item update(Long itemId, Item newItem, Long ownerId) {
+        items.put(itemId, newItem);
         log.info("Успешно обновлен Item - {}", itemId);
         return newItem;
     }

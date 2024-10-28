@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -21,15 +22,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto create(UserDto userDto) throws DuplicatedDataException {
-        validateEmail(userDto);
+        userStorage.validateEmail(UserMapper.toUser(userDto));
         User user = userStorage.create(UserMapper.toUser(userDto));
         return UserMapper.toUserDto(user);
     }
 
     @Override
     public UserDto update(UserDto userDto, Long id) throws ValidationException, NotFoundException, DuplicatedDataException {
-        validateEmail(userDto);
-        User user = userStorage.update(UserMapper.toUser(userDto), id);
+        userStorage.validateEmail(UserMapper.toUser(userDto));
+        User user = userStorage.getUserById(id).get();
+        User newUser = UserMapper.toUser(userDto);
+        if (StringUtils.isNotBlank(newUser.getName())) {
+            user.setName(newUser.getName());
+        }
+        if (StringUtils.isNotBlank(newUser.getEmail())) {
+            user.setEmail(newUser.getEmail());
+        }
+        userStorage.update(user, id);
         return UserMapper.toUserDto(user);
     }
 
@@ -47,11 +56,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public Collection<UserDto> getUsers() {
         return userStorage.getUsers().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
-    }
-
-    private void validateEmail(UserDto userDto) throws DuplicatedDataException {
-        if (userStorage.getUsers().stream().anyMatch(user -> user.getEmail().equals(userDto.getEmail()))) {
-            throw new DuplicatedDataException(String.format("email %s уже используется", userDto.getEmail()));
-        }
     }
 }

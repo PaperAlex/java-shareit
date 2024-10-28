@@ -38,11 +38,21 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto update(Long itemId, ItemDto newItemDto, Long ownerId) throws ValidationException, NotFoundException {
         userService.getUserById(ownerId);
-        if (!itemStorage.getItemById(itemId).get().getOwnerId().equals(ownerId)) {
+        Item newItem = ItemMapper.toItem(newItemDto);
+        Item item = itemStorage.getItemById(itemId).get();
+        if (!item.getOwnerId().equals(ownerId)) {
             throw new ValidationException("Запрос от пользователя, не являющимся владельцем товара");
         }
-        Item newItem = ItemMapper.toItem(newItemDto);
-        Item item = itemStorage.update(itemId, newItem);
+        if (newItem.getName() != null) {
+            item.setName(newItem.getName());
+        }
+        if (newItem.getDescription() != null) {
+            item.setDescription(newItem.getDescription());
+        }
+        if (newItem.getAvailable() != null) {
+            item.setAvailable(newItem.getAvailable());
+        }
+        itemStorage.update(itemId, item, ownerId);
         return ItemMapper.toItemDto(item);
     }
 

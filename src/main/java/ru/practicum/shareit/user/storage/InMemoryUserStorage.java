@@ -1,9 +1,12 @@
 package ru.practicum.shareit.user.storage;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
@@ -22,26 +25,9 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public User update(User newUser, Long userId) throws ValidationException, NotFoundException {
-        log.info("Новый юзер для обновления {}", newUser.toString());
-        if (userId == null) {
-            log.warn("Ошибка валидации : не указан id");
-            throw new ValidationException("Ошибка валидации : Не указан id");
-        }
-        if (!users.containsKey(userId)) {
-            log.warn("Ошибка валидации : указан некорректный id");
-            throw new NotFoundException("Ошибка валидации : указан некорректный id");
-
-        }
-        User user = users.get(userId);
-        if (newUser.getName() != null && !newUser.getName().isBlank()) {
-            user.setName(newUser.getName());
-        }
-        if (newUser.getEmail() != null && !newUser.getEmail().isBlank()) {
-            user.setEmail(newUser.getEmail());
-        }
-        log.info("Пользователь № {} успешно обновлен", user);
-        users.put(userId, user);
-        return user;
+        users.put(userId, newUser);
+        log.info("Пользователь № {} успешно обновлен", newUser);
+        return newUser;
     }
 
     public void deleteUser(Long userId) throws ValidationException, NotFoundException {
@@ -78,6 +64,12 @@ public class InMemoryUserStorage implements UserStorage {
                 .orElse(0);
         log.debug("Новый id - {}", id);
         return ++id;
+    }
+
+    public void validateEmail(User userValidation) throws DuplicatedDataException {
+        if (getUsers().stream().anyMatch(user -> user.getEmail().equals(userValidation.getEmail()))) {
+            throw new DuplicatedDataException(String.format("email %s уже используется", userValidation.getEmail()));
+        }
     }
 
 }
