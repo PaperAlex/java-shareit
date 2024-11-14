@@ -32,3 +32,4 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime created;
 }
+

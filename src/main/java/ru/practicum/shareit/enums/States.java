@@ -8,3 +8,4 @@ public enum States {
     WAITING,
     REJECTED
 }
+

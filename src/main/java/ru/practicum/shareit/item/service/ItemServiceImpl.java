@@ -203,3 +203,4 @@ public class ItemServiceImpl implements ItemService {
                 new NotFoundException(String.format("Пользователь %d не найден", userId)));
     }
 }
+

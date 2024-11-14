@@ -25,3 +25,4 @@ public interface ItemService {
     CommentDtoOut addComment(Long itemId, CommentDto commentDto, Long userId) throws ValidationException, NotFoundException;
 
 }
+

@@ -38,3 +38,4 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private Statuses status;
 }
+

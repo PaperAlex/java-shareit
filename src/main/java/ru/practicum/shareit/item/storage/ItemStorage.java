@@ -20,5 +20,4 @@ public interface ItemStorage {
 
     Collection<Item> searchItemByText(String text);
 
-
 }
