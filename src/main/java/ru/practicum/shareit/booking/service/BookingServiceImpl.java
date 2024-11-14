@@ -41,7 +41,7 @@ public class BookingServiceImpl implements BookingService {
         if (!item.getAvailable()) {
             throw new ValidationException("Товар не доступен");
         }
-        if (booker.getId() == item.getOwner().getId()) {
+        if (booker.getId().equals(item.getOwner().getId())) {
             throw new ValidationException("Не возможно бронировать свой товар");
         }
         if (!bookingDtoIn.getEnd().isAfter(bookingDtoIn.getStart()) ||

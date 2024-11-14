@@ -134,7 +134,7 @@ public class ItemServiceImpl implements ItemService {
         ItemDtoOut itemDtoOut = ItemMapper.toDto(item);
 
         LocalDateTime timeNow = LocalDateTime.now();
-        if (itemDtoOut.getOwner().getId() == userId) {
+        if (itemDtoOut.getOwner().getId().equals(userId)) {
             itemDtoOut.setLastBooking(bookingRepository
                     .findFirstByItemIdAndStartLessThanEqualAndStatus(itemDtoOut.getId(), timeNow,
                             Statuses.APPROVED, Sort.by(DESC, "end"))
