@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,11 +14,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class InMemoryItemStorage implements ItemStorage {
     Map<Long, Item> items = new HashMap<>();
+    UserStorage userStorage;
 
     @Override
-    public Item create(Item newItem, Long ownerId) {
+    public Item create(Item newItem, Long ownerId) throws NotFoundException {
         newItem.setId(generateId());
-        newItem.setOwnerId(ownerId);
+        newItem.setOwner(userStorage.getUserById(ownerId).get());
         items.put(newItem.getId(), newItem);
         log.info("Добавлен новый Item {}", newItem);
         return newItem;
@@ -52,7 +54,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Collection<Item> getItemByUser(Long userId) {
-        return items.values().stream().filter((item -> item.getOwnerId().equals(userId))).toList();
+        return items.values().stream().filter((item -> item.getOwner().getId().equals(userId))).toList();
     }
 
     @Override

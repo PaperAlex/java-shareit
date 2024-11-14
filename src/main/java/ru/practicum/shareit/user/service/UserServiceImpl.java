@@ -9,7 +9,7 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.mapper.UserMapper;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -18,19 +18,20 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
+
 
     @Override
     public UserDto create(UserDto userDto) throws DuplicatedDataException {
-        userStorage.validateEmail(UserMapper.toUser(userDto));
-        User user = userStorage.create(UserMapper.toUser(userDto));
+        validateEmail(userDto);
+        User user = userRepository.save(UserMapper.toUser(userDto));
         return UserMapper.toUserDto(user);
     }
 
     @Override
     public UserDto update(UserDto userDto, Long id) throws ValidationException, NotFoundException, DuplicatedDataException {
-        userStorage.validateEmail(UserMapper.toUser(userDto));
-        User user = userStorage.getUserById(id).get();
+        validateEmail(userDto);
+        User user = userRepository.findById(id).get();
         User newUser = UserMapper.toUser(userDto);
         if (StringUtils.isNotBlank(newUser.getName())) {
             user.setName(newUser.getName());
@@ -38,23 +39,28 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(newUser.getEmail())) {
             user.setEmail(newUser.getEmail());
         }
-        userStorage.update(user, id);
         return UserMapper.toUserDto(user);
     }
 
     @Override
     public void deleteUser(Long id) throws ValidationException, NotFoundException {
-        userStorage.deleteUser(id);
+        userRepository.deleteById(id);
     }
 
     @Override
     public UserDto getUserById(Long id) throws NotFoundException {
-        Optional<User> user = userStorage.getUserById(id);
+        Optional<User> user = userRepository.findById(id);
         return UserMapper.toUserDto(user.get());
     }
 
     @Override
     public Collection<UserDto> getUsers() {
-        return userStorage.getUsers().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+    }
+
+    private void validateEmail(UserDto userDto) throws DuplicatedDataException {
+        if (userRepository.findAll().stream().anyMatch(user -> user.getEmail().equals(userDto.getEmail()))) {
+            throw new DuplicatedDataException(String.format("email %s уже используется", userDto.getEmail()));
+        }
     }
 }

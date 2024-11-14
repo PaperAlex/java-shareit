@@ -5,15 +5,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
+import ru.practicum.shareit.item.comment.dto.CommentDtoOut;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoOut;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.utils.Create;
 
 import java.util.Collection;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
@@ -34,8 +34,8 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable Long itemId) throws NotFoundException {
-        return itemService.getItemById(itemId);
+    public ItemDtoOut getItem(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId) throws NotFoundException {
+        return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
@@ -46,5 +46,12 @@ public class ItemController {
     @GetMapping("/search")
     public Collection<ItemDto> geItemBySearch(@RequestParam String text) {
         return itemService.searchItemByText(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDtoOut addComment(@PathVariable Long itemId,
+                                    @Validated(Create.class) @RequestBody CommentDto commentDto,
+                                    @RequestHeader("X-Sharer-User-Id") long userId) throws ValidationException, NotFoundException {
+        return itemService.addComment(itemId, commentDto, userId);
     }
 }
