@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Slf4j
-@Transactional
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
@@ -34,6 +33,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
+    @Transactional
     @Override
     public BookingDtoOut create(BookingDto bookingDtoIn, Long userId) throws ValidationException, NotFoundException {
         User booker = getUser(userId);
@@ -56,6 +56,7 @@ public class BookingServiceImpl implements BookingService {
         return BookingMapper.toBookingDtoOut(booking);
     }
 
+    @Transactional
     @Override
     public BookingDtoOut approveBooking(Long bookingId, Boolean isApproved, Long userId) throws ValidationException, NotFoundException {
         Booking booking = getById(bookingId);

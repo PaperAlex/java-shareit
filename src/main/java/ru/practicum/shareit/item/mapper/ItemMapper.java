@@ -1,12 +1,13 @@
 package ru.practicum.shareit.item.mapper;
 
-import lombok.experimental.UtilityClass;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoOut;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
-@UtilityClass
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
 
     /* Метод преобразовывает данные в ItemDto */
@@ -29,7 +30,7 @@ public class ItemMapper {
         );
     }
 
-    public ItemDtoOut toDto(Item item) {
+    public static ItemDtoOut toDto(Item item) {
         return new ItemDtoOut(
                 item.getId(),
                 item.getName(),

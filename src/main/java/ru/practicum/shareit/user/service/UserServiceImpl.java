@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DuplicatedDataException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
 
+    @Transactional
     @Override
     public UserDto create(UserDto userDto) throws DuplicatedDataException {
         validateEmail(userDto);
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDto(user);
     }
 
+    @Transactional
     @Override
     public UserDto update(UserDto userDto, Long id) throws ValidationException, NotFoundException, DuplicatedDataException {
         validateEmail(userDto);
@@ -42,24 +45,28 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDto(user);
     }
 
+    @Transactional
     @Override
     public void deleteUser(Long id) throws ValidationException, NotFoundException {
         userRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDto getUserById(Long id) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
         return UserMapper.toUserDto(user.get());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<UserDto> getUsers() {
         return userRepository.findAll().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
     private void validateEmail(UserDto userDto) throws DuplicatedDataException {
-        if (userRepository.findAll().stream().anyMatch(user -> user.getEmail().equals(userDto.getEmail()))) {
+        Optional<User> user = userRepository.findByEmail(userDto.getEmail());
+        if (user.isPresent()) {
             throw new DuplicatedDataException(String.format("email %s уже используется", userDto.getEmail()));
         }
     }

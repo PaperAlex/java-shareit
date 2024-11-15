@@ -34,7 +34,6 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
-@Transactional
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
@@ -44,6 +43,7 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
 
 
+    @Transactional
     @Override
     public ItemDto create(Long ownerId, ItemDto itemDto) throws NotFoundException {
         User owner = userRepository.findById(ownerId).orElseThrow(() ->
@@ -60,6 +60,7 @@ public class ItemServiceImpl implements ItemService {
                 new NotFoundException(String.format("id %s не найден", itemId)));
     }
 
+    @Transactional
     @Override
     public ItemDto update(Long itemId, ItemDto newItemDto, Long ownerId) throws ValidationException, NotFoundException {
         User owner = userRepository.findById(ownerId).orElseThrow(() ->
@@ -81,6 +82,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toItemDto(item);
     }
 
+    @Transactional
     @Override
     public void deleteItem(Long itemId) throws ValidationException, NotFoundException {
 
@@ -118,6 +120,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findItems(text).stream().map(ItemMapper::toItemDto).collect(toList());
     }
 
+    @Transactional
     @Override
     public CommentDtoOut addComment(Long itemId, CommentDto commentDto, Long userId) throws ValidationException, NotFoundException {
         User user = getUser(userId);
