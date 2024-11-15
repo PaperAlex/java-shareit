@@ -7,9 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.user.utils.Create;
 
-/**
- * TODO Sprint add-controllers.
- */
 
 @Data
 @Builder

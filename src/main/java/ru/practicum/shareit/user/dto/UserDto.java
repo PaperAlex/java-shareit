@@ -16,3 +16,4 @@ public class UserDto {
     @Email(groups = {Create.class}, message = "Электронная должна содержать символ @")
     private String email;
 }
+

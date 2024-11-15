@@ -69,5 +69,4 @@ public class InMemoryUserStorage implements UserStorage {
             throw new DuplicatedDataException(String.format("email %s уже используется", userValidation.getEmail()));
         }
     }
-
 }

@@ -17,7 +17,5 @@ public interface UserService {
     Collection<UserDto> getUsers();
 
     UserDto getUserById(Long id) throws NotFoundException;
-
-
 }
 

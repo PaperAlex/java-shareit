@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface ItemStorage {
-    Item create(Item item, Long ownerId);
+    Item create(Item item, Long ownerId) throws NotFoundException;
 
     Optional<Item> getItemById(Long itemId);
 
@@ -19,6 +19,5 @@ public interface ItemStorage {
     Collection<Item> getItemByUser(Long userId);
 
     Collection<Item> searchItemByText(String text);
-
 
 }
