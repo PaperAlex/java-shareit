@@ -21,3 +21,4 @@ public interface UserStorage {
 
     void validateEmail(User user) throws DuplicatedDataException;
 }
+
