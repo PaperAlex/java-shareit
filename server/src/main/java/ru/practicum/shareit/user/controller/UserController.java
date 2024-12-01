@@ -32,13 +32,13 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(@Validated(Create.class) @RequestBody UserDto userDto) throws DuplicatedDataException, NotFoundException {
+    public UserDto createUser(@RequestBody UserDto userDto) throws DuplicatedDataException, NotFoundException {
         return userService.create(userDto);
     }
 
 
     @PatchMapping("/{userId}")
-    public UserDto updateUserById(@Validated(Update.class) @RequestBody UserDto userDto, @PathVariable Long userId)
+    public UserDto updateUserById(@RequestBody UserDto userDto, @PathVariable Long userId)
             throws ValidationException, NotFoundException, DuplicatedDataException {
         UserDto update = userService.update(userDto, userId);
         return update;

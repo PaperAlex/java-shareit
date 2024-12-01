@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -10,7 +9,6 @@ import ru.practicum.shareit.item.comment.dto.CommentDtoOut;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoOut;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.utils.Create;
 
 import java.util.Collection;
 
@@ -23,7 +21,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDtoOut create(@RequestHeader("X-Sharer-User-Id") Long userId,
-                             @Validated(Create.class) @RequestBody ItemDto itemDto) throws NotFoundException {
+                             @RequestBody ItemDto itemDto) throws NotFoundException {
         return itemService.create(userId, itemDto);
     }
 
@@ -50,7 +48,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDtoOut addComment(@PathVariable Long itemId,
-                                    @Validated(Create.class) @RequestBody CommentDto commentDto,
+                                    @RequestBody CommentDto commentDto,
                                     @RequestHeader("X-Sharer-User-Id") long userId) throws ValidationException, NotFoundException {
         return itemService.addComment(itemId, commentDto, userId);
     }
