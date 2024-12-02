@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class Booking {
 
     @Id
@@ -38,4 +39,3 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private Statuses status;
 }
-

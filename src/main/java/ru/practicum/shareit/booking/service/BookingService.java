@@ -18,4 +18,3 @@ public interface BookingService {
 
     List<BookingDtoOut> getAllByOwnerId(Long ownerId, String state) throws NotFoundException, ValidationException;
 }
-

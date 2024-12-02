@@ -1,25 +1,23 @@
 package ru.practicum.shareit.booking.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoOut;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.user.utils.Create;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@RestController
+@RestController("ServerBookingController")
 @RequestMapping(path = "/bookings")
 public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
-    public BookingDtoOut saveNewBooking(@Validated(Create.class) @RequestBody BookingDto bookingDtoIn,
+    public BookingDtoOut saveNewBooking(@RequestBody BookingDto bookingDtoIn,
                                         @RequestHeader("X-Sharer-User-Id") Long userId) throws ValidationException, NotFoundException {
         return bookingService.create(bookingDtoIn, userId);
     }

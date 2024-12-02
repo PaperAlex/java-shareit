@@ -13,4 +13,3 @@ public class CommentDtoOut {
     private String authorName;
     private LocalDateTime created;
 }
-

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class Comment {
 
     @Id
@@ -34,4 +35,3 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime created;
 }
-

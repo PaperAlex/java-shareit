@@ -13,4 +13,3 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     List<Comment> findByItemIn(List<Item> allByOwnerId, Sort created);
 }
-

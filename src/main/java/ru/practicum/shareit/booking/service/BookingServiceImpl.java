@@ -35,23 +35,23 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public BookingDtoOut create(BookingDto bookingDtoIn, Long userId) throws ValidationException, NotFoundException {
+    public BookingDtoOut create(BookingDto bookingDto, Long userId) throws ValidationException, NotFoundException {
         User booker = getUser(userId);
-        Item item = getItem(bookingDtoIn.getItemId());
+        Item item = getItem(bookingDto.getItemId());
         if (!item.getAvailable()) {
             throw new ValidationException("Товар не доступен");
         }
         if (booker.getId().equals(item.getOwner().getId())) {
             throw new ValidationException("Не возможно бронировать свой товар");
         }
-        if (!bookingDtoIn.getEnd().isAfter(bookingDtoIn.getStart()) ||
-                bookingDtoIn.getStart().isBefore(LocalDateTime.now())) {
+        if (!bookingDto.getEnd().isAfter(bookingDto.getStart()) ||
+                bookingDto.getStart().isBefore(LocalDateTime.now())) {
             throw new ValidationException("Дата бронирования не может быть раньше даты возврата");
         }
         Booking booking = new Booking();
         booking.setItem(item);
         booking.setBooker(booker);
-        bookingRepository.save(BookingMapper.toBooking(bookingDtoIn, booking));
+        bookingRepository.save(BookingMapper.toBooking(bookingDto, booking));
         log.info("Бронирование с идентификатором {} создано", booking.getId());
         return BookingMapper.toBookingDtoOut(booking);
     }
